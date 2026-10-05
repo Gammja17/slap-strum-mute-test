@@ -364,7 +364,7 @@
     </div>
     <div class="sheet-preview" id="sheet-preview" hidden>
       <img id="share-img" alt="결과 이미지">
-      <a class="btn" id="share-dl" download="slide-strum-mute-result.png">이미지 다운로드</a>
+      <a class="btn" id="share-dl" download="slide-strum-mute-result.jpg">이미지 다운로드</a>
       <p class="sheet-hint" id="sheet-hint">다운로드가 안 되면 이미지를 길게 눌러(또는 우클릭) 저장하세요.</p>
     </div>
   </div>
@@ -611,7 +611,7 @@ $("sh-x").addEventListener("click", () => {
 });
 $("sh-insta").addEventListener("click", () => withBusy($("sh-insta"), "이미지 준비 중…", async () => {
   const blob = await renderShareBlob();
-  const file = blob && new File([blob], "slide-strum-mute-result.png", { type: "image/png" });
+  const file = blob && new File([blob], "slide-strum-mute-result.jpg", { type: "image/jpeg" });
   if (file && navigator.canShare && navigator.canShare({ files: [file] })){
     await navigator.share({ files: [file], title: "슬라이드 스트럼 뮤트 캐릭터 타입테스트", text: shareText() + " " + resultUrl() });
     return;
@@ -682,8 +682,9 @@ async function renderShareCard(){
   }
   x.fillStyle = dim; x.font = '20px "Share Tech Mono"'; x.fillText("SLIDE STRUM MUTE  ·  " + PAGE_URL.replace(/^https?:\/\//, ""), W / 2, H - 72);
   x.fillText("X. @woodzlikeyou", W / 2, H - 44);
-  const url = cv.toDataURL("image/png");
-  const blob = await new Promise(r => cv.toBlob(r, "image/png"));
+  const blob = await new Promise(r => cv.toBlob(r, "image/jpeg", 0.92));
+  if (!blob) throw new Error("render failed");
+  const url = URL.createObjectURL(blob);
   shareCache = { key: cacheKey, url, blob };
   return url;
 }
