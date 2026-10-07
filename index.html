@@ -4,6 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>슬라이드 스트럼 뮤트 캐릭터 타입테스트</title>
+<meta name="description" content="당신과 가장 닮은 등장인물은 누구일까요? 슬라이드 스트럼 뮤트 캐릭터 타입테스트">
+<meta property="og:type" content="website">
+<meta property="og:title" content="슬라이드 스트럼 뮤트 캐릭터 타입테스트">
+<meta property="og:description" content="당신과 가장 닮은 등장인물은 누구일까요?">
+<meta property="og:image" content="https://ssm-personality.pages.dev/img/share/default.jpg">
+<meta property="og:url" content="https://ssm-personality.pages.dev/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="슬라이드 스트럼 뮤트 캐릭터 타입테스트">
+<meta name="twitter:description" content="당신과 가장 닮은 등장인물은 누구일까요?">
+<meta name="twitter:image" content="https://ssm-personality.pages.dev/img/share/default.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Share+Tech+Mono&display=swap">
 <style>
@@ -563,6 +573,7 @@ function renderResult(forced){
   $("rwarn").hidden = !c.warn;
   if (c.warn) $("rwarntext").innerHTML = c.warn;
   show("s-result");
+  renderShareCard().catch(() => {});
 }
 
 /* img/logo.png 가 있으면 텍스트 제목 대신 로고 표시 */
@@ -571,10 +582,10 @@ function renderResult(forced){
 
 $("start").addEventListener("click", startQuiz);
 /* ===== 공유 ===== 문구·해시태그는 여기서 수정 */
-const PAGE_URL = location.origin + location.pathname;
+const PAGE_URL = (location.origin + location.pathname).replace(/index\.html$/, "").replace(/\/?$/, "/");
 const SHARE_TAGS = ["슬라이드스트럼뮤트", "SLIDESTRUMMUTE", "캐릭터타입테스트"];
 function curChar(){ return CHARACTERS[document.body.dataset.char]; }
-function resultUrl(){ return PAGE_URL + "?r=" + (document.body.dataset.char || ""); }   // 그 캐릭터 결과로 바로 열리는 링크
+function resultUrl(){ return PAGE_URL + "r/" + (document.body.dataset.char || "") + "/"; }   // 그 캐릭터 결과로 바로 열리는 링크 (링크 미리보기 카드용 페이지)
 function shareText(){ const c = curChar(); return "나는 〈슬라이드 스트럼 뮤트〉 속 " + (c ? c.name : "누구") + "! 당신은 누구와 닮았나요?"; }
 let toastTimer;
 function toast(msg){ const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => t.hidden = true, 2600); }
@@ -604,11 +615,17 @@ $("sh-copy").addEventListener("click", async () => {
   try { await navigator.clipboard.writeText(shareText() + " " + resultUrl()); toast("결과 링크가 복사됐어요"); }
   catch (e){ toast("복사에 실패했어요. 주소창의 링크를 복사해 주세요"); }
 });
-$("sh-x").addEventListener("click", () => {
+$("sh-x").addEventListener("click", () => withBusy($("sh-x"), "이미지 준비 중…", async () => {
+  const blob = await renderShareBlob();
+  const file = blob && new File([blob], "slide-strum-mute-result.jpg", { type: "image/jpeg" });
+  if (file && navigator.canShare && navigator.canShare({ files: [file] })){
+    await navigator.share({ files: [file], text: shareText() + " " + resultUrl() + " " + SHARE_TAGS.map(t => "#" + t).join(" ") });
+    return;   // 폰: 공유창에서 X를 고르면 이미지·문구·링크가 한 번에 들어감
+  }
   const u = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(shareText()) + "&url=" + encodeURIComponent(resultUrl()) + "&hashtags=" + encodeURIComponent(SHARE_TAGS.join(","));
   window.open(u, "_blank", "noopener");
-  withBusy($("sh-x"), "이미지 준비 중…", () => showPreview("트윗 작성창이 열렸어요. '사진 저장' 버튼(또는 이미지 길게 누르기)으로 저장해서 트윗에 첨부하면 결과 카드까지 올라갑니다."));
-});
+  await showPreview("트윗 작성창이 열렸어요. '사진 저장' 버튼(또는 이미지 길게 누르기)으로 저장해서 트윗에 첨부하면 결과 카드까지 올라갑니다.");
+}));
 $("sh-insta").addEventListener("click", () => withBusy($("sh-insta"), "이미지 준비 중…", async () => {
   const blob = await renderShareBlob();
   const file = blob && new File([blob], "slide-strum-mute-result.jpg", { type: "image/jpeg" });
