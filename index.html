@@ -314,7 +314,7 @@
     </div>
     <p class="lead">당신과 가장 닮은 <b>등장인물</b>은 누구일까요?</p>
     <p class="center"><button class="btn" id="start">테스트 시작</button></p>
-    <p class="date">2026.02.26<small>SLIDE STRUM MUTE</small></p>
+    <p class="date">26.02.26<small>SLIDE STRUM MUTE</small></p>
     <p class="disclaimer start-note">⚠️ 테스트 내용은 응시자의 해석과 다를 수 있습니다.</p>
     <p class="disclaimer sns">X. @woodzlikeyou</p>
   </section>
@@ -346,7 +346,7 @@
       <ul class="keys" id="rkeys"></ul>
       <p class="desc" id="rdesc"></p>
       <div class="warn" id="rwarn" hidden><span id="rwarntext"></span></div>
-      <p class="date cposter-date">2026.02.26<small>SLIDE STRUM MUTE</small></p>
+      <p class="date cposter-date">26.02.26<small>SLIDE STRUM MUTE</small></p>
     </div>
     <div class="result-foot">
       <div class="btn-row">
@@ -583,7 +583,7 @@ function renderResult(forced){
 $("start").addEventListener("click", startQuiz);
 /* ===== 공유 ===== 문구·해시태그는 여기서 수정 */
 const PAGE_URL = (location.origin + location.pathname).replace(/index\.html$/, "").replace(/\/?$/, "/");
-const SHARE_TAGS = ["슬라이드스트럼뮤트", "SLIDESTRUMMUTE"];
+const SHARE_TAGS = ["슬라이드스트럼뮤트", "SLIDE_STRUM_MUTE"];
 function curChar(){ return CHARACTERS[document.body.dataset.char]; }
 function resultUrl(){ return PAGE_URL + "r/" + (document.body.dataset.char || "") + "/"; }   // 그 캐릭터 결과로 바로 열리는 링크 (링크 미리보기 카드용 페이지)
 function shareText(){ const c = curChar(); return c ? "\"" + c.quote + "\" 나는 〈슬라이드 스트럼 뮤트〉 속 " + c.name + ". 당신이 찾은 건 캐릭터일까요, 아니면 당신일까요?" : ""; }
@@ -673,7 +673,7 @@ async function renderShareCard(){
     x.drawImage(off, 80, 84);
   }
   x.textAlign = "right"; x.fillStyle = dim; x.font = '22px "Share Tech Mono"'; x.fillText("CHARACTER TYPE TEST", W - 84, 112);
-  x.font = '22px "LABDigital"'; x.fillText("2026.02.26", W - 84, 146);
+  x.font = '22px "LABDigital"'; x.fillText("26.02.26", W - 84, 146);
   x.textAlign = "center"; x.fillStyle = cream; x.font = '44px "' + HF + '"'; x.fillText("당신과 가장 닮은 인물은", W / 2, 300);
   x.save(); x.translate(W / 2, 580); x.rotate(-0.035);
   const fw = 640, fh = 427;
