@@ -383,19 +383,19 @@
 /* ===== 캐릭터 정보 =====
    images: 결과 화면에 뜰 사진 목록 (img/chars/). 결과마다 이 중 하나가 랜덤으로 나옵니다. 우진 = 흑진 사진  */
 const CHARACTERS = {
-  woojin:{ name:"우진", images:["img/chars/woojin-1.jpg","img/chars/woojin-2.jpg","img/chars/woojin-3.jpg","img/chars/woojin-4.jpg"],
+  woojin:{ name:"우진", quote:"우리 더 밝은 데로 가요.", images:["img/chars/woojin-1.jpg","img/chars/woojin-2.jpg","img/chars/woojin-3.jpg","img/chars/woojin-4.jpg"],
     tag:"누나의 그림자에서 자기 노래를 찾는 사람", keys:["질투","동경","일희일비"],
     desc:"누나를 질투하면서도 동경하는 당신. 처음엔 ‘누나처럼’ 되고 싶어서 시작했지만, 어느새 진짜 원하는 것에 조금씩 가까워지고 있어요. 원하는 건 분명한데 마음은 소심해서, 작은 결과 하나에도 하루 종일 일희일비하죠. 강한 누나 앞에서 괜히 작아지는 자격지심도 있지만… 그래도 누나가 좋은 건 어쩔 수 없나 봅니다.",
     warn:"※ 이 성향이 과해지면<br><b>흑진이</b>처럼 될 수 있으니 주의!" },
-  geumjin:{ name:"금진", images:["img/chars/geumjin-1.jpg","img/chars/geumjin-2.jpg","img/chars/geumjin-3.jpg"],
+  geumjin:{ name:"금진", quote:"저 이상한 사람은 아니고.. 저 진짜 팬이에요.", images:["img/chars/geumjin-1.jpg","img/chars/geumjin-2.jpg","img/chars/geumjin-3.jpg"],
     tag:"감정이 곧 행동, 어디로 튈지 모르는 사람", keys:["순수","충동","예측불가"],
     desc:"가장 순수하고 원초적인 당신. 느끼는 그대로 움직이기 때문에 감정과 행동 사이에 틈이 없어요. 문제는 그 감정이 시시각각 바뀐다는 것. 방금까지 웃다가 다음 순간 튀어나가는 당신 때문에 주변 사람들은 늘 심장이 쫄깃합니다. 예측 불가, 그래서 더 눈을 뗄 수 없는 타입.",
     warn:null },
-  sieun:{ name:"시은", images:["img/chars/sieun-1.jpg","img/chars/sieun-2.jpg","img/chars/sieun-3.jpg"],
+  sieun:{ name:"시은", quote:"너 같이 호리호리한 놈은 밤길 조심해야 돼.", images:["img/chars/sieun-1.jpg","img/chars/sieun-2.jpg","img/chars/sieun-3.jpg"],
     tag:"강한 척 뒤에 여린 속을 숨긴 사람", keys:["장녀","강한 척","희생"],
     desc:"속은 여리지만 ‘장녀’라는 역할을 위해 강한 척하는 당신. 동생을 구박하는 것처럼 보여도 누구보다 애정하고, 알뜰히 챙기죠. 원래는 똘똘하고 자기 자신을 잘 아는 사람이었는데, 현실적인 문제에 부딪히고 남을 챙기는 데 익숙해지면서 정작 내가 뭘 열망하는지는 점점 잊어가고 있어요. 오늘은 남 말고 나에게 한 번만 물어봐 주세요. 진짜 원하는 게 뭔지.",
     warn:null },
-  namgi:{ name:"남기", images:["img/chars/namgi-1.jpg","img/chars/namgi-2.jpg","img/chars/namgi-3.jpg","img/chars/namgi-4.jpg"],
+  namgi:{ name:"남기", quote:"제가 별로 안 좋아하는 관상이에요. 고생도 없이 잘된 상.", images:["img/chars/namgi-1.jpg","img/chars/namgi-2.jpg","img/chars/namgi-3.jpg","img/chars/namgi-4.jpg"],
     tag:"원하는 건 끝까지, 잃을 게 없는 사람", keys:["집착","직설","겁 없음"],
     desc:"원하는 게 생기면 무슨 짓을 해서라도 끝까지 가는 당신. (그게 무엇이든요…) 남에게 관심이 없고 편견도 없어서 오히려 직설적이고, 싫은 건 확실하게 싫다고 말하죠. 눈치는 빠르고 계획은 치밀하고, 어딘가 음침한데 잃을 게 없어서 겁도 없습니다. 상대하기 가장 까다롭고, 그래서 가장 궁금한 타입.",
     warn:null },
@@ -583,10 +583,11 @@ function renderResult(forced){
 $("start").addEventListener("click", startQuiz);
 /* ===== 공유 ===== 문구·해시태그는 여기서 수정 */
 const PAGE_URL = (location.origin + location.pathname).replace(/index\.html$/, "").replace(/\/?$/, "/");
-const SHARE_TAGS = ["슬라이드스트럼뮤트", "SLIDESTRUMMUTE", "캐릭터타입테스트"];
+const SHARE_TAGS = ["슬라이드스트럼뮤트", "SLIDESTRUMMUTE"];
 function curChar(){ return CHARACTERS[document.body.dataset.char]; }
 function resultUrl(){ return PAGE_URL + "r/" + (document.body.dataset.char || "") + "/"; }   // 그 캐릭터 결과로 바로 열리는 링크 (링크 미리보기 카드용 페이지)
-function shareText(){ const c = curChar(); return "나는 〈슬라이드 스트럼 뮤트〉 속 " + (c ? c.name : "누구") + "! 당신은 누구와 닮았나요?"; }
+function shareText(){ const c = curChar(); return c ? "\"" + c.quote + "\" 나는 〈슬라이드 스트럼 뮤트〉 속 " + c.name + ". 당신이 찾은 건 캐릭터일까요, 아니면 당신일까요?" : ""; }
+function fullShare(){ return shareText() + "\n" + resultUrl() + "\n" + SHARE_TAGS.map(t => "#" + t).join(" "); }
 let toastTimer;
 function toast(msg){ const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => t.hidden = true, 2600); }
 
@@ -612,17 +613,17 @@ async function withBusy(btn, label, fn){
 }
 
 $("sh-copy").addEventListener("click", async () => {
-  try { await navigator.clipboard.writeText(shareText() + " " + resultUrl()); toast("결과 링크가 복사됐어요"); }
+  try { await navigator.clipboard.writeText(fullShare()); toast("결과 링크가 복사됐어요"); }
   catch (e){ toast("복사에 실패했어요. 주소창의 링크를 복사해 주세요"); }
 });
 $("sh-x").addEventListener("click", () => withBusy($("sh-x"), "이미지 준비 중…", async () => {
   const blob = await renderShareBlob();
   const file = blob && new File([blob], "slide-strum-mute-result.jpg", { type: "image/jpeg" });
   if (file && navigator.canShare && navigator.canShare({ files: [file] })){
-    await navigator.share({ files: [file], text: shareText() + " " + resultUrl() + " " + SHARE_TAGS.map(t => "#" + t).join(" ") });
+    await navigator.share({ files: [file], text: fullShare() });
     return;   // 폰: 공유창에서 X를 고르면 이미지·문구·링크가 한 번에 들어감
   }
-  const u = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(shareText()) + "&url=" + encodeURIComponent(resultUrl()) + "&hashtags=" + encodeURIComponent(SHARE_TAGS.join(","));
+  const u = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(fullShare());
   window.open(u, "_blank", "noopener");
   await showPreview("트윗 작성창이 열렸어요. '사진 저장' 버튼(또는 이미지 길게 누르기)으로 저장해서 트윗에 첨부하면 결과 카드까지 올라갑니다.");
 }));
@@ -630,7 +631,7 @@ $("sh-insta").addEventListener("click", () => withBusy($("sh-insta"), "이미지
   const blob = await renderShareBlob();
   const file = blob && new File([blob], "slide-strum-mute-result.jpg", { type: "image/jpeg" });
   if (file && navigator.canShare && navigator.canShare({ files: [file] })){
-    await navigator.share({ files: [file], title: "슬라이드 스트럼 뮤트 캐릭터 타입테스트", text: shareText() + " " + resultUrl() });
+    await navigator.share({ files: [file], title: "슬라이드 스트럼 뮤트 캐릭터 타입테스트", text: fullShare() });
     return;
   }
   await showPreview("이 기기에선 바로 넘길 수 없어요. '사진 저장' 버튼으로 이미지를 저장한 뒤 인스타그램 스토리에 올려 주세요. 결과 링크는 '결과 링크 복사'로 붙일 수 있어요.");
