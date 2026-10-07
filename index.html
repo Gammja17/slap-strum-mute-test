@@ -229,8 +229,8 @@
   .sheet-btns .btn{width:100%;text-align:center;padding-left:12px;padding-right:12px;font-size:17px}
   .sheet-btns .btn[disabled]{opacity:.6;cursor:default}
   .sheet-preview{margin-top:16px;display:grid;gap:10px;justify-items:center}
+  .sheet-preview[hidden]{display:none}
   .sheet-preview img{width:100%;max-height:52vh;object-fit:contain;border:1px solid rgba(233,227,211,.3)}
-  .sheet-preview .btn{text-decoration:none;font-size:17px}
   .sheet-hint{margin:0;font-size:12.5px;color:var(--dim);text-align:center;line-height:1.5}
 
 
@@ -364,7 +364,6 @@
     </div>
     <div class="sheet-preview" id="sheet-preview" hidden>
       <img id="share-img" alt="결과 이미지">
-      <a class="btn" id="share-dl" download="slide-strum-mute-result.jpg">이미지 다운로드</a>
       <p class="sheet-hint" id="sheet-hint">다운로드가 안 되면 이미지를 길게 눌러(또는 우클릭) 저장하세요.</p>
     </div>
   </div>
@@ -587,11 +586,12 @@ $("sheet-close").addEventListener("click", closeSheet);
 $("sheet-bg").addEventListener("click", closeSheet);
 addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); });
 
-async function showPreview(hint){
+async function showPreview(hint, save){
   const url = await renderShareCard();
-  $("share-img").src = url; $("share-dl").href = url;
-  $("sheet-hint").textContent = hint || "다운로드가 안 되면 이미지를 길게 눌러(또는 우클릭) 저장하세요.";
+  $("share-img").src = url;
+  $("sheet-hint").textContent = hint || "저장이 안 되면 이미지를 길게 눌러(또는 우클릭) 저장하세요.";
   $("sheet-preview").hidden = false;
+  if (save){ const a = document.createElement("a"); a.href = url; a.download = "slide-strum-mute-result.jpg"; a.click(); }
   $("share-img").scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 async function withBusy(btn, label, fn){
@@ -607,7 +607,7 @@ $("sh-copy").addEventListener("click", async () => {
 $("sh-x").addEventListener("click", () => {
   const u = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(shareText()) + "&url=" + encodeURIComponent(resultUrl()) + "&hashtags=" + encodeURIComponent(SHARE_TAGS.join(","));
   window.open(u, "_blank", "noopener");
-  withBusy($("sh-x"), "이미지 준비 중…", () => showPreview("트윗 작성창이 열렸어요. 위 이미지를 저장해서 트윗에 첨부하면 결과 카드까지 올라갑니다."));
+  withBusy($("sh-x"), "이미지 준비 중…", () => showPreview("트윗 작성창이 열렸어요. '사진 저장' 버튼(또는 이미지 길게 누르기)으로 저장해서 트윗에 첨부하면 결과 카드까지 올라갑니다."));
 });
 $("sh-insta").addEventListener("click", () => withBusy($("sh-insta"), "이미지 준비 중…", async () => {
   const blob = await renderShareBlob();
@@ -616,9 +616,9 @@ $("sh-insta").addEventListener("click", () => withBusy($("sh-insta"), "이미지
     await navigator.share({ files: [file], title: "슬라이드 스트럼 뮤트 캐릭터 타입테스트", text: shareText() + " " + resultUrl() });
     return;
   }
-  await showPreview("이 기기에선 바로 넘길 수 없어요. 이미지를 저장한 뒤 인스타그램 스토리에 올려 주세요. 결과 링크는 '결과 링크 복사'로 붙일 수 있어요.");
+  await showPreview("이 기기에선 바로 넘길 수 없어요. '사진 저장' 버튼으로 이미지를 저장한 뒤 인스타그램 스토리에 올려 주세요. 결과 링크는 '결과 링크 복사'로 붙일 수 있어요.");
 }));
-$("sh-image").addEventListener("click", () => withBusy($("sh-image"), "만드는 중…", () => showPreview()));
+$("sh-image").addEventListener("click", () => withBusy($("sh-image"), "만드는 중…", () => showPreview(null, true)));
 
 /* 결과 카드 그리기 (1080x1350 세로 포스터, 인스타 스토리/피드·트위터 공용) */
 const loadImg = src => new Promise(res => { const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = src; });
